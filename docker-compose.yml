@@ -1,0 +1,66 @@
+services:
+  # Laravel приложение
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile #указываем путь до докер файла
+    container_name: laravel
+    volumes:
+        # Монтирует всю текущую директорию (.)
+        # в директорию /var/www/html внутри контейнера
+      - .:/var/www/html
+    ports:
+      - "8080:80"
+    environment:
+      - APACHE_DOCUMENT_ROOT=/var/www/html/public
+    # указываем, что при запуске сервиса обязательно были выполнены эти 2 команды.
+    # Первая - запускает миграцию и создает таблицы, вторая запускает сервер
+    command: /bin/sh -c "php artisan migrate --force && apache2-foreground"
+    env_file:
+      - .env
+    depends_on:
+      - pgsql #обязательно указываем имя сервиса
+    networks:
+      - laravel-net
+
+
+  # PostgreSQL база данных
+  pgsql: #имя сервиса может быть любое
+    container_name: postgreSQL
+    # подгружаем ГОТОВЫЙ образ для pgsql
+    image: postgres:16
+    ports:
+      - "5432:5432"
+    environment: # информация о базе данных
+     - POSTGRES_DB=socialNetworkDB
+     - POSTGRES_USER=postgres
+     - POSTGRES_HOST_AUTH_METHOD=trust # если нет пароля,
+     # то прописываем это свойство, так pgsql не будет требовать обязательного ввода пароля
+    volumes:
+    # Cоздаем папку, куда будут загружены данные о базе данных,
+    # которые потом будут разворачиваться в контейнере
+      - ./pgdata:/var/lib/postgresql/data
+    # активируем файл, находящийся в этом каталоге,
+    # который создает базу данных socialNetworkDB
+      - ./pgsql:/docker-entrypoint-initdb.d/
+    networks:
+    #указываем сеть, которая будет работать внутри контейнера,
+    # название может быть любым, главное чтобы все сервисы были к ней подключены
+      - laravel-net
+
+# pgAdmin
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4:latest
+    ports:
+      - "8081:80" # или любой другой порт, который вам подходит
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@yandex.ru
+      - PGADMIN_DEFAULT_PASSWORD=admin12345
+    volumes:
+      - .:/var/lib/pgadmin
+    networks:
+      - laravel-net
+
+networks:
+  laravel-net:
