@@ -1,30 +1,20 @@
 services:
-  # Laravel приложение
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile #указываем путь до докер файла
-    container_name: laravel
-    volumes:
-        # Монтирует всю текущую директорию (.)
-        # в директорию /var/www/html внутри контейнера
-      - .:/var/www/html
+
+# pgAdmin
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4:latest
     ports:
-      - "8080:80"
+      - "8081:80" # или любой другой порт, который вам подходит
     environment:
-      - APACHE_DOCUMENT_ROOT=/var/www/html/public
-    # указываем, что при запуске сервиса обязательно были выполнены эти 2 команды.
-    # Первая - запускает миграцию и создает таблицы, вторая запускает сервер
-    command: /bin/sh -c "php artisan migrate --force && apache2-foreground"
-    env_file:
-      - .env
-    depends_on:
-      - pgsql #обязательно указываем имя сервиса
+      - PGADMIN_DEFAULT_EMAIL=admin@yandex.ru
+      - PGADMIN_DEFAULT_PASSWORD=admin12345
+    volumes:
+      - ./pgadmin:/var/lib/pgadmin
     networks:
       - laravel-net
 
-
-  # PostgreSQL база данных
+ # PostgreSQL база данных
   pgsql: #имя сервиса может быть любое
     container_name: postgreSQL
     # подгружаем ГОТОВЫЙ образ для pgsql
@@ -48,17 +38,27 @@ services:
     # название может быть любым, главное чтобы все сервисы были к ней подключены
       - laravel-net
 
-# pgAdmin
-  pgadmin:
-    container_name: pgadmin
-    image: dpage/pgadmin4:latest
-    ports:
-      - "8081:80" # или любой другой порт, который вам подходит
-    environment:
-      - PGADMIN_DEFAULT_EMAIL=admin@yandex.ru
-      - PGADMIN_DEFAULT_PASSWORD=admin12345
+  # Laravel приложение
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile #указываем путь до докер файла
+    container_name: laravel
     volumes:
-      - .:/var/lib/pgadmin
+        # Монтирует всю текущую директорию (.)
+        # в директорию /var/www/html внутри контейнера
+      - .:/var/www/html
+    ports:
+      - "8080:80"
+    environment:
+      - APACHE_DOCUMENT_ROOT=/var/www/html/public
+    # указываем, что при запуске сервиса обязательно были выполнены эти 2 команды.
+    # Первая - запускает миграцию и создает таблицы, вторая запускает сервер
+    command: /bin/sh -c "php artisan migrate --force && apache2-foreground"
+    env_file:
+      - .env
+    depends_on:
+      - pgsql #обязательно указываем имя сервиса
     networks:
       - laravel-net
 
