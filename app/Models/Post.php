@@ -12,7 +12,11 @@ class Post extends Model
     protected $fillable = [
         "title",
         "text",
-        "images"
+        "images",
+        "user_id"
+    ];
+    protected $casts = [
+        'images' => 'array',
     ];
 
     public function user()

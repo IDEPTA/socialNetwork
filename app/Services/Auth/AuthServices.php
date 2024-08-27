@@ -40,5 +40,8 @@ class AuthServices implements AuthServicesInterface
         return true;
     }
 
-    public function resetPassword(ResetPasswordValidation $resetData) {}
+    public function resetPassword(ResetPasswordValidation $resetData)
+    {
+        $validationData = $resetData->validated();
+    }
 }
