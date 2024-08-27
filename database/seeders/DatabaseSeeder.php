@@ -20,8 +20,8 @@ class DatabaseSeeder extends Seeder
         Post::factory(40)->create();
         Comment::factory(200)->create();
         // User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
+        //     'name' => 'Прокопчук Сергей Александрович',
+        //     'email' => 'test@yandex.ru',
         // ]);
     }
 }

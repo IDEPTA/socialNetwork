@@ -20,7 +20,6 @@ class AuthController extends Controller
             $token = $this->authService->login($loginData);
 
             return response()->json([
-                "msg" => "Вы авторизованы",
                 "token" => $token
             ]);
         } catch (Exception $e) {

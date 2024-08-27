@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Post;
+namespace App\Services\Post;
 
 use App\Http\Requests\PostValidation;
 use App\Interfaces\Post\PostServiceInterface;
@@ -8,17 +8,9 @@ use App\Models\Post;
 
 class PostService implements PostServiceInterface
 {
-    /**
-     * Create a new class instance.
-     */
-    public function __construct()
-    {
-        //
-    }
-
     public function index(): object
     {
-        $posts = Post::all();
+        $posts = Post::with(["comment", "user"])->get();
 
         return $posts;
     }
@@ -28,7 +20,7 @@ class PostService implements PostServiceInterface
         return $post;
     }
 
-    public function store(PostValidation $req)
+    public function store(PostValidation $req): Post
     {
         $validationData = $req->validated();
 
@@ -38,8 +30,9 @@ class PostService implements PostServiceInterface
                 $path = $image->store("images");
                 $imageUrls[] = "/storage/" . $path;
             }
-            $validationData['images'] = $imageUrls;
         }
+
+        $validationData['images'] = $imageUrls;
         $newPost = Post::create($validationData);
 
         return $newPost;
@@ -48,18 +41,16 @@ class PostService implements PostServiceInterface
     public function update(PostValidation $req, Post $post): Post
     {
         $validationData = $req->validated();
+        $imageUrls = [];
 
         if ($req->hasFile("images")) {
-            $imageUrls = [];
             foreach ($req->images as $image) {
                 $path = $image->store("images");
-                $imageUrls[] = [
-                    "image" => "/storage/" . $path
-                ];
+                $imageUrls[] = $path;
             }
-            $validationData['images'] = $imageUrls;
         }
 
+        $validationData['images'] = $imageUrls;
         $post->update($validationData);
 
         return $post;

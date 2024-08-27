@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\PostValidation;
+use App\Http\Resources\PostResource;
 use App\Interfaces\Post\PostServiceInterface;
 use App\Models\Post;
 use Exception;
-use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class PostController extends Controller
 {
@@ -14,12 +15,14 @@ class PostController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): JsonResponse
     {
         try {
             $posts = $this->postService->index();
 
-            return response()->json(['posts' => $posts], 200);
+            return response()->json([
+                'posts' => PostResource::collection($posts)
+            ], 200);
         } catch (Exception $e) {
             return response()->json([
                 'msg' => $e->getMessage(),
@@ -31,7 +34,7 @@ class PostController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(PostValidation $request)
+    public function store(PostValidation $request): JsonResponse
     {
         try {
             $newPost = $this->postService->store($request);
@@ -48,12 +51,14 @@ class PostController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Post $post)
+    public function show(Post $post): JsonResponse
     {
         try {
             $concretePost = $this->postService->show($post);
 
-            return response()->json(['post' => $concretePost]);
+            return response()->json([
+                'post' => PostResource::make($concretePost)
+            ]);
         } catch (Exception $e) {
             return response()->json([
                 'msg' => $e->getMessage(),
@@ -65,7 +70,7 @@ class PostController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(PostValidation $req, Post $post)
+    public function update(PostValidation $req, Post $post): JsonResponse
     {
         try {
             $updatedPost = $this->postService->update($req, $post);
@@ -82,7 +87,7 @@ class PostController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Post $post)
+    public function destroy(Post $post): JsonResponse
     {
         try {
             $this->postService->destroy($post);
