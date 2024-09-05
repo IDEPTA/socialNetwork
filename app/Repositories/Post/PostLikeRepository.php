@@ -5,31 +5,13 @@ namespace App\Repositories\Post;
 use App\Models\Post;
 use App\Models\User;
 use App\Models\PostLike;
-use App\Interfaces\PostRepository\PostLikeRepositoryInterface;
+use App\Interfaces\PostRepository\PostLikeShowRepositoryInterface;
 
-class PostLikeRepository implements PostLikeRepositoryInterface
+class PostLikeRepository implements PostLikeShowRepositoryInterface
 {
     /**
      * Create a new class instance.
      */
-
-    public function getAllLikesPosts(): object
-    {
-        $likes = PostLike::with(["user", "post"])
-            ->where("feedback_type", true)
-            ->get();
-
-        return $likes;
-    }
-
-    public function getAllDislikesPosts(): object
-    {
-        $dislikes = PostLike::with(["user", "post"])
-            ->where("feedback_type", false)
-            ->get();
-
-        return $dislikes;
-    }
 
     public function getLikesForPost(Post $post): object
     {

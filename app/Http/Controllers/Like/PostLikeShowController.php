@@ -1,49 +1,20 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Like;
 
-use App\Http\Resources\LikePostResource;
 use Exception;
+use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
-use App\Interfaces\PostRepository\PostLikeRepositoryInterface;
-use App\Models\Post;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\LikePostResource;
+use App\Interfaces\PostRepository\PostLikeShowRepositoryInterface;
 
-class PostLikeController extends Controller
+class PostLikeShowController extends Controller
 {
-    public function __construct(protected PostLikeRepositoryInterface $postsRepository) {}
+    public function __construct(protected PostLikeShowRepositoryInterface $postsRepository) {}
 
-    public function getAllLikesPosts(): JsonResponse
-    {
-        try {
-            $likes = $this->postsRepository->getAllLikesPosts();
 
-            return response()->json([
-                "likes" => LikePostResource::collection($likes)
-            ]);
-        } catch (Exception $e) {
-            return response()->json([
-                "msg" => $e->getMessage(),
-                "code" => $e->getCode()
-            ]);
-        }
-    }
-
-    public function getAllDislikesPosts(): JsonResponse
-    {
-        try {
-            $dislikes = $this->postsRepository->getAllDislikesPosts();
-
-            return response()->json([
-                "dislikes" => LikePostResource::collection($dislikes)
-            ]);
-        } catch (Exception $e) {
-            return response()->json([
-                "msg" => $e->getMessage(),
-                "code" => $e->getCode()
-            ]);
-        }
-    }
 
     public function getLikesForUser(User $user): JsonResponse
     {

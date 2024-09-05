@@ -5,10 +5,8 @@ namespace App\Interfaces\PostRepository;
 use App\Models\Post;
 use App\Models\User;
 
-interface PostLikeRepositoryInterface
+interface PostLikeShowRepositoryInterface
 {
-    public function getAllLikesPosts(): object;
-    public function getAllDislikesPosts(): object;
 
     public function getLikesForPost(Post $post): object;
     public function getDislikesForPost(Post $post): object;

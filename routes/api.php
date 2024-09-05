@@ -1,11 +1,12 @@
 <?php
 
-use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\CommentController;
-use App\Http\Controllers\PostController;
-use App\Http\Controllers\PostLikeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PostController;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Like\PostLikeController;
+use App\Http\Controllers\Like\PostLikeShowController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -19,13 +20,12 @@ Route::controller(AuthController::class)->group(function () {
 Route::apiResource('posts', PostController::class);
 Route::apiResource('comments', CommentController::class)->middleware("auth:sanctum");
 
-Route::controller(PostLikeController::class)->group(function () {
-    Route::get("getAllLikesPosts", "getAllLikesPosts");
-    Route::get("getAllDislikesPosts", "getAllDislikesPosts");
-
+Route::controller(PostLikeShowController::class)->group(function () {
     Route::get("getLikesForUser/{user}", "getLikesForUser");
     Route::get("getDislikesForUser/{user}", "getDislikesForUser");
 
     Route::get("getLikesForPost/{post}", "getLikesForPost");
     Route::get("getDislikesForPost/{post}", "getDislikesForPost");
 });
+
+Route::apiResource("postLikes", PostLikeController::class);
