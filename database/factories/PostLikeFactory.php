@@ -2,13 +2,14 @@
 
 namespace Database\Factories;
 
+use App\Models\Post;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Post>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\PostLike>
  */
-class PostFactory extends Factory
+class PostLikeFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -17,18 +18,12 @@ class PostFactory extends Factory
      */
     public function definition(): array
     {
-        $images = [];
-
-        for ($i = 0; $i < rand(0, 10); $i++) {
-            $images[] = fake()->imageUrl();
-        }
         $users = User::pluck("id")->toArray();
-
+        $posts = Post::pluck("id")->toArray();
         return [
-            "title" => fake()->text(10),
-            "text" => fake()->text(50),
             "user_id" => fake()->randomElement($users),
-            "images" => json_encode($images)
+            "post_id" => fake()->randomElement($posts),
+            "feedback_type" => fake()->randomElement([true, false]),
         ];
     }
 }
