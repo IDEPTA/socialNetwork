@@ -2,14 +2,17 @@
 
 namespace App\Orchid\Screens\Post;
 
-use App\Models\Comment;
 use App\Models\Post;
+use App\Models\Comment;
 use App\Models\PostLike;
-use App\Orchid\Layouts\Comment\CommentsTable;
-use App\Orchid\Layouts\Like\Post\PostLikeTable;
 use Orchid\Screen\Sight;
 use Orchid\Screen\Screen;
 use Orchid\Support\Facades\Layout;
+use App\Orchid\Layouts\Charts\ChartBar;
+use App\Orchid\Layouts\Charts\ChartLine;
+use App\Orchid\Layouts\Charts\ChartPie;
+use App\Orchid\Layouts\Comment\CommentsTable;
+use App\Orchid\Layouts\Like\Post\PostLikeTable;
 
 class PostShowScreen extends Screen
 {
@@ -23,6 +26,22 @@ class PostShowScreen extends Screen
         return [
             "post" => $post,
             "likes" => PostLike::with("user")->where("post_id", $post->id)->paginate(7),
+            "PieLike" => PostLike::where("post_id", $post->id)
+                ->countForGroup("feedback_type")
+                ->toChart(
+                    fn($e) => $e ? "Лайк" : "Дизлайк"
+                ),
+
+            "LineLike" => [
+                PostLike::where("post_id", $post->id)
+                    ->where("feedback_type", true)
+                    ->countByDays()
+                    ->toChart("Лайки"),
+                PostLike::where("post_id", $post->id)
+                    ->where("feedback_type", false)
+                    ->countByDays()
+                    ->toChart("Дизлайки")
+            ],
             "comments"  => Comment::with("user")->where("post_id", $post->id)->paginate(7)
         ];
     }
@@ -82,6 +101,11 @@ class PostShowScreen extends Screen
             Layout::split([
                 CommentsTable::class,
                 PostLikeTable::class
+            ])->ratio('70/30'),
+
+            Layout::split([
+                ChartLine::make("LineLike", "Лайки дизлайки"),
+                ChartPie::make("PieLike", "Соотношение лайков и дизлайков"),
             ])->ratio('70/30'),
         ];
     }

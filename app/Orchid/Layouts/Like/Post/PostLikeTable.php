@@ -37,7 +37,7 @@ class PostLikeTable extends Table
                 ->render(fn($e) => e($e->user->email))
                 ->sort(),
             TD::make("feedback_type", "Оценка")
-                ->render(fn($e) => e($e ? "Лайк" : "Дизлайк"))
+                ->render(fn($e) => e($e->feedback_type ? "Лайк" : "Дизлайк"))
                 ->sort(),
 
             TD::make("created_at", "Дата оценки")
