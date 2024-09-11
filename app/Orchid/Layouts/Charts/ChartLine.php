@@ -15,8 +15,8 @@ class ChartLine extends Chart
      */
     protected $type = 'line';
     protected $colors = [
-        '#2274A5',
         '#F75C03',
+        '#2274A5',
     ];
 
     /**

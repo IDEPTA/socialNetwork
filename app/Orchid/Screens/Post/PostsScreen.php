@@ -17,7 +17,7 @@ class PostsScreen extends Screen
     public function query(): iterable
     {
         return [
-            "posts" => Post::with("user")->paginate(10)
+            "posts" => Post::with("user")->filters()->paginate(10)
         ];
     }
 

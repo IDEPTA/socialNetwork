@@ -15,8 +15,8 @@ class ChartPie extends Chart
      */
     protected $type = 'pie';
     protected $colors = [
-        '#2274A5',
         '#F75C03',
+        '#2274A5',
     ];
 
     /**

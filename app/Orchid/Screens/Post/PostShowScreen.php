@@ -7,10 +7,12 @@ use App\Models\Comment;
 use App\Models\PostLike;
 use Orchid\Screen\Sight;
 use Orchid\Screen\Screen;
+use Orchid\Support\Color;
+use Orchid\Screen\Actions\Button;
 use Orchid\Support\Facades\Layout;
 use App\Orchid\Layouts\Charts\ChartBar;
-use App\Orchid\Layouts\Charts\ChartLine;
 use App\Orchid\Layouts\Charts\ChartPie;
+use App\Orchid\Layouts\Charts\ChartLine;
 use App\Orchid\Layouts\Comment\CommentsTable;
 use App\Orchid\Layouts\Like\Post\PostLikeTable;
 
@@ -53,7 +55,7 @@ class PostShowScreen extends Screen
      */
     public function name(): ?string
     {
-        return 'Подробнее';
+        return "Подробнее о посте";
     }
 
     /**
@@ -63,7 +65,13 @@ class PostShowScreen extends Screen
      */
     public function commandBar(): iterable
     {
-        return [];
+        return [
+
+            Button::make("Удалить")
+                ->icon("bs.trash")
+                ->type(Color::DANGER)
+                ->method("remove"),
+        ];
     }
 
     /**
@@ -106,7 +114,7 @@ class PostShowScreen extends Screen
             Layout::split([
                 ChartLine::make("LineLike", "Лайки дизлайки"),
                 ChartPie::make("PieLike", "Соотношение лайков и дизлайков"),
-            ])->ratio('70/30'),
+            ])->ratio('60/40'),
         ];
     }
 }

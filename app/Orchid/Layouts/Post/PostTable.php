@@ -29,20 +29,31 @@ class PostTable extends Table
     {
         return [
             TD::make("id")
-                ->sort(),
+                ->sort()
+                ->filter(),
             TD::make("title", "Заголовок")
-                ->sort(),
+                ->sort()
+                ->filter(),
             TD::make("text", "Текст")
-                ->sort(),
+                ->sort()
+                ->filter(),
 
             TD::make("user", "ФИО")
+                ->sort()
+                ->filter()
                 ->render(fn($model) => Link::make($model->user->name)),
             TD::make("email", "E-mail")
+                ->sort()
+                ->filter()
                 ->render(fn($model) => Link::make($model->user->email)),
 
             TD::make("created_at", "Дата создания")
+                ->sort()
+                ->filter()
                 ->defaultHidden(),
             TD::make("updated_at", "Дата обновления")
+                ->sort()
+                ->filter()
                 ->defaultHidden(),
 
             TD::make(("Действия"))

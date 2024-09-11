@@ -32,7 +32,7 @@ class PostService implements PostServiceInterface
             }
         }
 
-        $validationData['images'] = $imageUrls;
+        $validationData['images'] = json_encode($imageUrls);
         $newPost = Post::create($validationData);
 
         return $newPost;

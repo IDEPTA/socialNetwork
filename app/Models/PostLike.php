@@ -21,6 +21,13 @@ class PostLike extends Model
         "feedback_type"
     ];
 
+    protected $allowedSorts = [
+        'id',
+        'user_id',
+        'post_id',
+        'feedback_type'
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
