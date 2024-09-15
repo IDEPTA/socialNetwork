@@ -15,6 +15,7 @@ use App\Orchid\Layouts\Charts\ChartPie;
 use App\Orchid\Layouts\Charts\ChartLine;
 use App\Orchid\Layouts\Comment\CommentsTable;
 use App\Orchid\Layouts\Like\Post\PostLikeTable;
+use Orchid\Screen\Actions\Link;
 
 class PostShowScreen extends Screen
 {
@@ -101,7 +102,10 @@ class PostShowScreen extends Screen
                         }
                     ),
                 Sight::make('user_id', "Ф.И.О")
-                    ->render(fn($model) => $model->user->name),
+                    ->render(
+                        fn($model) => Link::make($model->user->name)
+                            ->route("platform.user.show", $model->user)
+                    ),
                 Sight::make('user_id', "E-mail")
                     ->render(fn($model) => $model->user->email),
             ]),

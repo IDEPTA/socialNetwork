@@ -19,6 +19,7 @@ use App\Orchid\Screens\Role\RoleListScreen;
 use App\Orchid\Screens\User\UserEditScreen;
 use App\Orchid\Screens\User\UserListScreen;
 use App\Orchid\Screens\User\UserProfileScreen;
+use App\Orchid\Screens\User\UserShowScreen;
 use Illuminate\Support\Facades\Route;
 use Tabuna\Breadcrumbs\Trail;
 
@@ -50,6 +51,9 @@ Route::screen('users/{user}/edit', UserEditScreen::class)
     ->breadcrumbs(fn(Trail $trail, $user) => $trail
         ->parent('platform.systems.users')
         ->push($user->name, route('platform.systems.users.edit', $user)));
+
+Route::screen("/user/{user}", UserShowScreen::class)
+    ->name("platform.user.show");
 
 // Platform > System > Users > Create
 Route::screen('users/create', UserEditScreen::class)
