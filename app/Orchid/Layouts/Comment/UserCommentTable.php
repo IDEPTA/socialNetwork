@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Orchid\Layouts\Post;
+namespace App\Orchid\Layouts\Comment;
 
 use Orchid\Screen\TD;
 use Orchid\Screen\Actions\Link;
@@ -8,7 +8,7 @@ use Orchid\Screen\Layouts\Table;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Actions\DropDown;
 
-class PostTable extends Table
+class UserCommentTable extends Table
 {
     /**
      * Data source.
@@ -18,7 +18,7 @@ class PostTable extends Table
      *
      * @var string
      */
-    protected $target = 'posts';
+    protected $target = 'comments';
 
     /**
      * Get the table cells to be displayed.
@@ -31,28 +31,20 @@ class PostTable extends Table
             TD::make("id")
                 ->sort()
                 ->filter(),
-            TD::make("title", "Заголовок")
+            TD::make("text", "Комментарий")
+                ->width("300px")
                 ->sort()
                 ->filter(),
-            TD::make("text", "Текст")
-                ->sort()
-                ->filter(),
-
-            TD::make("email", "E-mail")
+            TD::make("post_id", "Пост")
                 ->sort()
                 ->filter()
                 ->render(
-                    fn($model) => Link::make($model->user->email)
-                        ->route("platform.user.show", $model->user)
+                    fn($model) => Link::make($model->post->title)
+                        ->route("platform.posts.show", $model->post)
                 ),
-
             TD::make("created_at", "Дата создания")
-                ->sort()
-                ->filter()
                 ->defaultHidden(),
             TD::make("updated_at", "Дата обновления")
-                ->sort()
-                ->filter()
                 ->defaultHidden(),
 
             TD::make(("Действия"))
@@ -72,7 +64,7 @@ class PostTable extends Table
 
                             Link::make('Подробнее')
                                 ->icon("bi.eye")
-                                ->route("platform.posts.show", $model)
+                            // ->route("platform.posts.show", $model)
                         ])
                 ),
         ];

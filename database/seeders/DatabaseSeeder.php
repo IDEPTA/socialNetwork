@@ -18,9 +18,9 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         User::factory(100)->create();
-        Post::factory(40)->create();
-        Comment::factory(200)->create();
-        PostLike::factory(2000)->create();
+        Post::factory(500)->create();
+        Comment::factory(2000)->create();
+        // PostLike::factory(2000)->create();
         // User::factory()->create([
         //     'name' => 'Прокопчук Сергей Александрович',
         //     'email' => 'test@yandex.ru',
