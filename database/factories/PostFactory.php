@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use Carbon\Carbon;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -28,7 +29,8 @@ class PostFactory extends Factory
             "title" => fake()->text(10),
             "text" => fake()->text(50),
             "user_id" => fake()->randomElement($users),
-            "images" => json_encode($images)
+            "images" => json_encode($images),
+            "created_at" => Carbon::today()->subDay(rand(16, 30)),
         ];
     }
 }

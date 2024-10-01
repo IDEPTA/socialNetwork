@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use Carbon\Carbon;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -20,10 +21,12 @@ class PostLikeFactory extends Factory
     {
         $users = User::pluck("id")->toArray();
         $posts = Post::pluck("id")->toArray();
+
         return [
             "user_id" => fake()->randomElement($users),
             "post_id" => fake()->randomElement($posts),
             "feedback_type" => fake()->randomElement([true, false]),
+            "created_at" => Carbon::today()->subDay(rand(0, 31)),
         ];
     }
 }
