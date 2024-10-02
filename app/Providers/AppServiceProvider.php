@@ -10,9 +10,11 @@ use App\Services\Comment\CommentService;
 use App\Interfaces\Post\PostServiceInterface;
 use App\Repositories\Post\PostLikeRepository;
 use App\Interfaces\Auth\AuthServicesInterface;
+use App\Interfaces\Chat\ChatServiceInterface;
 use App\Interfaces\Like\PostLikeServiceInterface;
 use App\Interfaces\Comment\CommentServiceInterface;
 use App\Interfaces\PostRepository\PostLikeShowRepositoryInterface;
+use App\Services\Chat\ChatService;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -26,6 +28,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(CommentServiceInterface::class, CommentService::class);
         $this->app->bind(PostLikeShowRepositoryInterface::class, PostLikeRepository::class);
         $this->app->bind(PostLikeServiceInterface::class, PostLikeService::class);
+        $this->app->bind(ChatServiceInterface::class, ChatService::class);
     }
 
     /**

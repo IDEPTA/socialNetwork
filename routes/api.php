@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Chat\ChatController;
 use App\Http\Controllers\Like\PostLikeController;
 use App\Http\Controllers\Like\PostLikeShowController;
 
@@ -19,6 +20,7 @@ Route::controller(AuthController::class)->group(function () {
 
 Route::apiResource('posts', PostController::class);
 Route::apiResource('comments', CommentController::class)->middleware("auth:sanctum");
+Route::apiResource('chats', ChatController::class);
 
 Route::controller(PostLikeShowController::class)->group(function () {
     Route::get("getLikesForUser/{user}", "getLikesForUser");
