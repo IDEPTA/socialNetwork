@@ -47,11 +47,11 @@ class User extends Authenticatable
      * @var array
      */
     protected $allowedFilters = [
-           'id'         => Where::class,
-           'name'       => Like::class,
-           'email'      => Like::class,
-           'updated_at' => WhereDateStartEnd::class,
-           'created_at' => WhereDateStartEnd::class,
+        'id'         => Where::class,
+        'name'       => Like::class,
+        'email'      => Like::class,
+        'updated_at' => WhereDateStartEnd::class,
+        'created_at' => WhereDateStartEnd::class,
     ];
 
     /**
@@ -66,4 +66,19 @@ class User extends Authenticatable
         'updated_at',
         'created_at',
     ];
+
+    public function senderChat()
+    {
+        return $this->hasMany(Chat::class, 'senderId');
+    }
+
+    public function receivedChats()
+    {
+        return $this->hasMany(Chat::class, 'recipientId');
+    }
+
+    public function message()
+    {
+        return $this->hasMany(Message::class);
+    }
 }
