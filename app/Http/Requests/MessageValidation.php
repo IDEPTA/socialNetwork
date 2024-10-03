@@ -11,7 +11,7 @@ class MessageValidation extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,9 @@ class MessageValidation extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            "user_id" => "required|integer",
+            "message" => "required|min:1",
+            "chat_id" => "required|integer"
         ];
     }
 }

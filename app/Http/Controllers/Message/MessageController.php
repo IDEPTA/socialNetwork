@@ -3,18 +3,27 @@
 namespace App\Http\Controllers\Message;
 
 use Exception;
-use Illuminate\Http\Request;
+use App\Models\Message;
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\MessageValidation;
+use App\Interfaces\Message\MessageServiceInterface;
 
 class MessageController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function __construct(private MessageServiceInterface $messageService) {}
+
+    public function index(): JsonResponse
     {
         try {
-            //code...
+            $result = $this->messageService->index();
+
+            return response()->json([
+                "messages" => $result
+            ]);
         } catch (Exception $e) {
             return response()->json([
                 "msg" => $e->getMessage(),
@@ -26,10 +35,14 @@ class MessageController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(MessageValidation $request): JsonResponse
     {
         try {
-            //code...
+            $newMessage = $this->messageService->store($request);
+
+            return response()->json([
+                "message" => $newMessage
+            ]);
         } catch (Exception $e) {
             return response()->json([
                 "msg" => $e->getMessage(),
@@ -41,10 +54,14 @@ class MessageController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Message $message): JsonResponse
     {
         try {
-            //code...
+            $message = $this->messageService->show($message);
+
+            return response()->json([
+                "message" => $message
+            ]);
         } catch (Exception $e) {
             return response()->json([
                 "msg" => $e->getMessage(),
@@ -56,10 +73,14 @@ class MessageController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(MessageValidation $request, Message $message): JsonResponse
     {
         try {
-            //code...
+            $updatedMessage = $this->messageService->update($request, $message);
+
+            return response()->json([
+                "message" => $updatedMessage
+            ]);
         } catch (Exception $e) {
             return response()->json([
                 "msg" => $e->getMessage(),
@@ -71,10 +92,14 @@ class MessageController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Message $message): JsonResponse
     {
         try {
-            //code...
+            $this->messageService->destroy($message);
+
+            return response()->json([
+                "msg" => "Сообщение удалено"
+            ]);
         } catch (Exception $e) {
             return response()->json([
                 "msg" => $e->getMessage(),
