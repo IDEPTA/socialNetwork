@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Message;
 
 use Exception;
 use App\Models\Message;
+use App\Events\MessageSent;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MessageValidation;

@@ -10,9 +10,8 @@ use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 
-class MessageSent implements ShouldBroadcast
+class MessageDelete implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -39,7 +38,7 @@ class MessageSent implements ShouldBroadcast
 
     public function broadcastAs()
     {
-        return 'chat.message';
+        return 'chat.delete';
     }
 
     public function broadcastWith()
@@ -47,14 +46,9 @@ class MessageSent implements ShouldBroadcast
         $data =
             [
                 'id' => $this->message->id,
-                'user_id' => $this->message->user_id,
-                'message' => $this->message->message,
-                'chat_id' => $this->message->chat_id,
-                'user' => $this->message->user,
-                'created_at' => $this->message->created_at,
             ];
 
-        Log::info('Эвент:', ['message' => $data]);
+        Log::info('Эвент делит:', ['message' => $data]);
 
         return $data;
     }

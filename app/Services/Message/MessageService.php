@@ -2,8 +2,10 @@
 
 namespace App\Services\Message;
 
+use App\Events\MessageDelete;
 use App\Models\Message;
 use App\Events\MessageSent;
+use Illuminate\Support\Facades\Log;
 use App\Http\Requests\MessageValidation;
 use App\Interfaces\Message\MessageServiceInterface;
 
@@ -22,7 +24,8 @@ class MessageService implements MessageServiceInterface
         $validationData = $req->validated();
         $newMessage = Message::create($validationData);
 
-        broadcast(new MessageSent($newMessage))->toOthers();
+        Log::info('сервис:', ['message' => $newMessage]);
+        MessageSent::dispatch($newMessage);
 
         return $newMessage;
     }
@@ -42,6 +45,8 @@ class MessageService implements MessageServiceInterface
 
     public function destroy(Message $message): void
     {
+        MessageDelete::dispatch($message);
+
         $message->delete();
     }
 }
