@@ -4,11 +4,15 @@ namespace App\Models;
 
 use Orchid\Filters\Types\Like;
 use Orchid\Filters\Types\Where;
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Notifications\Notifiable;
 use Orchid\Filters\Types\WhereDateStartEnd;
 use Orchid\Platform\Models\User as Authenticatable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class User extends Authenticatable
 {
+    use HasApiTokens, HasFactory, Notifiable;
     /**
      * The attributes that are mass assignable.
      *
@@ -47,11 +51,11 @@ class User extends Authenticatable
      * @var array
      */
     protected $allowedFilters = [
-           'id'         => Where::class,
-           'name'       => Like::class,
-           'email'      => Like::class,
-           'updated_at' => WhereDateStartEnd::class,
-           'created_at' => WhereDateStartEnd::class,
+        'id'         => Where::class,
+        'name'       => Like::class,
+        'email'      => Like::class,
+        'updated_at' => WhereDateStartEnd::class,
+        'created_at' => WhereDateStartEnd::class,
     ];
 
     /**
@@ -66,4 +70,19 @@ class User extends Authenticatable
         'updated_at',
         'created_at',
     ];
+
+    public function senderChat()
+    {
+        return $this->hasMany(Chat::class, 'senderId');
+    }
+
+    public function receivedChats()
+    {
+        return $this->hasMany(Chat::class, 'recipientId');
+    }
+
+    public function message()
+    {
+        return $this->hasMany(Message::class);
+    }
 }
