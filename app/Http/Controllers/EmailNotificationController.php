@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\emailNotificationRequest;
 use App\Jobs\sendEmailNotification;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -11,12 +12,9 @@ class EmailNotificationController extends Controller
     /**
      * Handle the incoming request.
      */
-    public function __invoke(Request $request)
+    public function __invoke(emailNotificationRequest $request)
     {
-        $messageData = $request->validate([
-            "title" => "required|min:3",
-            "text" => "required|min:3|max:255"
-        ]);
+        $messageData = $request->validated();
 
         $users = User::where("email_verified_at")->get();
 

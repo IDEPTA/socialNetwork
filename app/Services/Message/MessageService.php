@@ -45,6 +45,7 @@ class MessageService implements MessageServiceInterface
 
     public function destroy(Message $message): void
     {
+        Log::info('Эвент делит в сервисе');
         MessageDelete::dispatch($message);
 
         $message->delete();
