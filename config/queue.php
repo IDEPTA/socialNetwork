@@ -30,6 +30,22 @@ return [
 
     'connections' => [
 
+        'rabbitmq' => [
+            'driver' => 'rabbitmq',
+            'host' => env('RABBITMQ_HOST', '127.0.0.1'),
+            'port' => env('RABBITMQ_PORT', 5672),
+            'user' => env('RABBITMQ_USER', 'guest'),
+            'password' => env('RABBITMQ_PASSWORD', 'guest'),
+            'vhost' => env('RABBITMQ_VHOST', '/'),
+            'queue' => env('RABBITMQ_QUEUE', 'default'),
+            'options' => [
+                'connection_timeout' => 3.0,
+                'read_write_timeout' => 3.0,
+                'keepalive' => true,
+                'lazy' => false,
+            ],
+        ],
+
         'sync' => [
             'driver' => 'sync',
         ],
@@ -62,6 +78,7 @@ return [
             'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
             'after_commit' => false,
         ],
+
 
         'redis' => [
             'driver' => 'redis',
