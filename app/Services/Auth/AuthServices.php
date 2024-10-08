@@ -8,6 +8,7 @@ use App\Http\Requests\Auth\LoginValidation;
 use App\Http\Requests\Auth\RegisterValidation;
 use App\Interfaces\Auth\AuthServicesInterface;
 use App\Http\Requests\Auth\ResetPasswordValidation;
+use App\Jobs\sendEmailJob;
 use Illuminate\Http\Request;
 
 class AuthServices implements AuthServicesInterface
@@ -29,6 +30,7 @@ class AuthServices implements AuthServicesInterface
         $validationData = $registerData->validated();
         $newUser = User::create($validationData);
         $token = $newUser->createToken("auth_token")->plainTextToken;
+        sendEmailJob::dispatch($newUser);
 
         return $token;
     }
