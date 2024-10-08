@@ -7,6 +7,7 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Chat\ChatController;
 use App\Http\Controllers\Chat\ChatShowController;
+use App\Http\Controllers\EmailNotificationController;
 use App\Http\Controllers\Like\PostLikeController;
 use App\Http\Controllers\Like\PostLikeShowController;
 use App\Http\Controllers\Message\MessageController;
@@ -25,6 +26,7 @@ Route::apiResource('posts', PostController::class);
 Route::apiResource('comments', CommentController::class);
 Route::apiResource('chats', ChatController::class);
 Route::apiResource('messages', MessageController::class);
+Route::apiResource("postLikes", PostLikeController::class);
 
 Route::controller(PostLikeShowController::class)->group(function () {
     Route::get("getLikesForUser/{user}", "getLikesForUser");
@@ -42,4 +44,4 @@ Route::controller(MessageShowController::class)->group(function () {
     Route::get("getMessageForChat/{chat}", "getMessageForChat");
 });
 
-Route::apiResource("postLikes", PostLikeController::class);
+Route::post("sendEmailNotifications", EmailNotificationController::class);
