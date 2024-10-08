@@ -10,8 +10,9 @@ use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 
-class MessageDelete implements ShouldBroadcast
+class MessageDelete implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -22,6 +23,7 @@ class MessageDelete implements ShouldBroadcast
     public function __construct($message)
     {
         $this->message = $message;
+        Log::info('Эвент делит создается');
     }
 
     /**
@@ -43,13 +45,21 @@ class MessageDelete implements ShouldBroadcast
 
     public function broadcastWith()
     {
-        $data =
-            [
+        try {
+            $data = [
                 'id' => $this->message->id,
             ];
 
-        Log::info('Эвент делит:', ['message' => $data]);
+            Log::info('Эвент делит:', ['message' => $data]);
 
-        return $data;
+            return $data;
+        } catch (\Exception $e) {
+            Log::error('Ошибка при подготовке данных для трансляции в эвенте MessageDelete:', [
+                'error' => $e->getMessage()
+            ]);
+
+            // Можно также выполнить дополнительные действия, например, уведомить администратора или вызвать другой эвент
+            return [];
+        }
     }
 }
