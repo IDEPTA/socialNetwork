@@ -21,7 +21,7 @@ class AuthController extends Controller
 
             return response()->json([
                 "token" => $token
-            ]);
+            ], 200);
         } catch (Exception $e) {
             return response()->json([
                 "msg" => $e->getMessage(),
@@ -38,7 +38,7 @@ class AuthController extends Controller
             return response()->json([
                 "msg" => "Регистрация прошла успешно",
                 "token" => $token
-            ]);
+            ], 201);
         } catch (Exception $e) {
             return response()->json([
                 "msg" => $e->getMessage(),
@@ -54,7 +54,7 @@ class AuthController extends Controller
 
             return response()->json([
                 "msg" => "вы разлогинились,токен удален"
-            ]);
+            ], 200);
         } catch (Exception $e) {
             return response()->json([
                 "msg" => $e->getMessage(),
