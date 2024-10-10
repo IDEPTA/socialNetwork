@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\CommentValidation;
-use App\Http\Resources\CommentResource;
-use App\Interfaces\Comment\CommentServiceInterface;
-use App\Models\Comment;
 use Exception;
+use App\Models\Comment;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
+use App\Http\Resources\CommentResource;
+use App\Http\Requests\CommentValidation;
+use App\Interfaces\Comment\CommentServiceInterface;
 
 class CommentController extends Controller
 {
@@ -38,9 +39,11 @@ class CommentController extends Controller
     {
         try {
             $newComment = $this->commentService->store($request);
+            Log::info('Comment created:', $newComment->toArray());
 
-            return response()->json(["newComment" => $newComment]);
+            return response()->json(["newComment" => $newComment], 201);
         } catch (Exception $e) {
+            Log::error('Error creating comment:', ['message' => $e->getMessage(), 'code' => $e->getCode()]);
             return response()->json([
                 "msg" => $e->getMessage(),
                 "code" => $e->getCode()
@@ -60,6 +63,7 @@ class CommentController extends Controller
                 "comment" => CommentResource::make($comment)
             ]);
         } catch (Exception $e) {
+            Log::error('Error creating comment:', ['message' => $e->getMessage(), 'code' => $e->getCode()]);
             return response()->json([
                 "msg" => $e->getMessage(),
                 "code" => $e->getCode()
@@ -75,8 +79,9 @@ class CommentController extends Controller
         try {
             $updatedComment = $this->commentService->update($request, $comment);
 
-            return response()->json(["comments" => $updatedComment]);
+            return response()->json(["comments" => $updatedComment], 200);
         } catch (Exception $e) {
+            Log::error('Error creating comment:', ['message' => $e->getMessage(), 'code' => $e->getCode()]);
             return response()->json([
                 "msg" => $e->getMessage(),
                 "code" => $e->getCode()
@@ -90,10 +95,11 @@ class CommentController extends Controller
     public function destroy(Comment $comment): JsonResponse
     {
         try {
-            $deleteComment = $this->commentService->destroy($comment);
+            $this->commentService->destroy($comment);
 
-            return response()->json(["msg" => "Комментарий удален"]);
+            return response()->json(["msg" => "Комментарий удален"], 204);
         } catch (Exception $e) {
+            Log::error('Error creating comment:', ['message' => $e->getMessage(), 'code' => $e->getCode()]);
             return response()->json([
                 "msg" => $e->getMessage(),
                 "code" => $e->getCode()
