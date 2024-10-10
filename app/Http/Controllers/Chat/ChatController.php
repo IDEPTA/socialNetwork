@@ -44,7 +44,7 @@ class ChatController extends Controller
 
             return response()->json([
                 "chat" => $newChat
-            ]);
+            ], 201);
         } catch (Exception $e) {
             return response()->json([
                 "msg" => $e->getMessage(),
@@ -100,7 +100,8 @@ class ChatController extends Controller
             $this->chatService->destroy($chat);
 
             return response()->json([
-                "msg" => "Чат удален"
+                "msg" => "Чат удален",
+                200
             ]);
         } catch (Exception $e) {
             return response()->json([

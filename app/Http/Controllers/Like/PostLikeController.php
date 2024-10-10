@@ -36,7 +36,7 @@ class PostLikeController extends Controller
         try {
             $newLike = $this->likeService->store($request);
 
-            return response()->json(["newLike" => $newLike]);
+            return response()->json(["newLike" => $newLike], 201);
         } catch (Exception $e) {
             return response()->json([
                 "msg" => $e->getMessage(),
@@ -70,7 +70,7 @@ class PostLikeController extends Controller
         try {
             $updatedLike = $this->likeService->update($request, $postLike);
 
-            return response()->json(["newLike" => $updatedLike]);
+            return response()->json(["updatedLike" => $updatedLike]);
         } catch (Exception $e) {
             return response()->json([
                 "msg" => $e->getMessage(),
@@ -88,6 +88,6 @@ class PostLikeController extends Controller
 
         return response()->json([
             "msg" => "Запись $postLike->id удалена"
-        ]);
+        ], 200);
     }
 }

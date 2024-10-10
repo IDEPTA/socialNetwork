@@ -3,41 +3,26 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
-use App\Models\Post;
 use App\Models\Comment;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Log;
 
 class CommentsTest extends TestCase
 {
 
-    protected Comment $createdComment;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-
-        // Создаем комментарий, который будет использоваться в тестах
-        $this->createdComment = Comment::create([
-            'post_id' => 1,
-            'text' => 'New Comment TEST',
-            'user_id' => 1,
-        ]);
-    }
-
     public function test_store_comment_request(): void
     {
-        $comment = [
+        $newComment = [
             'post_id' => 1,
             'text' => 'New Comment TEST',
             'user_id' => 1
         ];
+        $response = $this->post('/api/comments', $newComment);
 
-        $response = $this->post('/api/comments', $comment);
+        Log::channel("testing_results_request")
+            ->info("STORE", ['data' => $response['newComment']]);
 
         $response->assertCreated();
-        $this->assertDatabaseHas('comments', $comment);
+        $this->assertDatabaseHas('comments', $newComment);
     }
 
     public function test_index_comment_request()
@@ -50,20 +35,30 @@ class CommentsTest extends TestCase
 
     public function test_show_comment_request()
     {
-        $response = $this->get("/api/comments/{$this->createdComment->id}");
+        $comment = Comment::OrderBy('id', 'desc')->first();
+        $response = $this->get("/api/comments/{$comment->id}");
+        Log::channel("testing_results_request")
+            ->info("SHOW", [
+                'id' => $comment->id,
+                'data' => $response['comment']
+            ]);
 
         $response->assertStatus(200);
     }
 
     public function test_update_comment_request()
     {
+        $comment = Comment::OrderBy('id', 'desc')->first();
         $updatedData = [
-            'post_id' => $this->createdComment->post_id, // Используем post_id из созданного комментария
+            'post_id' => 1,
             'text' => 'Updated Comment TEST',
-            'user_id' => $this->createdComment->user_id // Используем user_id из созданного комментария
+            'user_id' => 1
         ];
 
-        $response = $this->put("/api/comments/{$this->createdComment->id}", $updatedData);
+        $response = $this->put("/api/comments/{$comment->id}", $updatedData);
+
+        Log::channel("testing_results_request")
+            ->info("UPDATED", ['data' => $response['comments']]);
 
         $response->assertOk();
         $this->assertDatabaseHas('comments', $updatedData);
@@ -71,9 +66,16 @@ class CommentsTest extends TestCase
 
     public function test_delete_comment_request()
     {
-        $response = $this->delete("/api/comments/{$this->createdComment->id}");
+        $comment = Comment::OrderBy('id', 'desc')->first();
+        $response = $this->delete("/api/comments/{$comment->id}");
 
-        $response->assertStatus(204);
-        $this->assertDatabaseMissing('comments', ['id' => $this->createdComment->id]);
+        Log::channel("testing_results_request")
+            ->info("DELETED", [
+                'id' => $comment->id,
+                'data' => $response['msg']
+            ]);
+
+        $response->assertStatus(200);
+        $this->assertDatabaseMissing('comments', ['id' => $comment->id]);
     }
 }

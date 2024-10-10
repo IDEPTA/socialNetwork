@@ -79,7 +79,7 @@ class CommentController extends Controller
         try {
             $updatedComment = $this->commentService->update($request, $comment);
 
-            return response()->json(["comments" => $updatedComment], 200);
+            return response()->json(["comments" => $updatedComment]);
         } catch (Exception $e) {
             Log::error('Error creating comment:', ['message' => $e->getMessage(), 'code' => $e->getCode()]);
             return response()->json([
@@ -97,7 +97,7 @@ class CommentController extends Controller
         try {
             $this->commentService->destroy($comment);
 
-            return response()->json(["msg" => "Комментарий удален"], 204);
+            return response()->json(["msg" => "Комментарий удален"], 200);
         } catch (Exception $e) {
             Log::error('Error creating comment:', ['message' => $e->getMessage(), 'code' => $e->getCode()]);
             return response()->json([
