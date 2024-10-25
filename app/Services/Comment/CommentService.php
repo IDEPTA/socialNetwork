@@ -2,9 +2,10 @@
 
 namespace App\Services\Comment;
 
+use App\Models\Comment;
+use Illuminate\Support\Facades\Log;
 use App\Http\Requests\CommentValidation;
 use App\Interfaces\Comment\CommentServiceInterface;
-use App\Models\Comment;
 
 class CommentService implements CommentServiceInterface
 {
@@ -24,6 +25,7 @@ class CommentService implements CommentServiceInterface
     {
         $validationData = $req->validated();
         $newComment = Comment::create($validationData);
+        Log::info('Comment created:', $newComment->toArray());
 
         return $newComment;
     }

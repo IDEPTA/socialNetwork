@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\emailNotificationRequest;
 use App\Jobs\sendEmailNotification;
 use App\Models\User;
-use Illuminate\Http\Request;
 
 class EmailNotificationController extends Controller
 {
