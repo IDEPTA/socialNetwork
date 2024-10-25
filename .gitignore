@@ -3,3 +3,5 @@
 /pgadmin
 /pgdata
 /pgsql
+
+.phpunit.result.cache
