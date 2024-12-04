@@ -90,6 +90,24 @@ class UserShowScreen extends Screen
                 Sight::make('id'),
                 Sight::make('name', 'Ф.И.О'),
                 Sight::make('email', 'E-mail'),
+                Sight::make('2fa', 'статус 2FA')
+                    ->render(
+                        fn($user) => $user->telegram_username == false ?
+                            "Отключена" :
+                            "Включена"
+                    ),
+                Sight::make('telegram_username', 'Имя пользователя телеграмм')
+                    ->render(
+                        fn($user) => $user->telegram_username == null ?
+                            "Не установлен" :
+                            $user->telegram_username
+                    ),
+                Sight::make('telegram_chat_id', 'Телеграмм id')
+                    ->render(
+                        fn($user) => $user->telegram_chat_id == null ?
+                            "Не установлен" :
+                            $user->telegram_chat_id
+                    ),
                 Sight::make('email_verified_at', 'Верификация аккаунта')
                     ->render(
                         fn($user) =>

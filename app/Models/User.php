@@ -22,6 +22,11 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'tfa',
+        'tfa_code',
+        'tfa_code_expries_at',
+        'telegram_chat_id',
+        'telegram_username',
     ];
 
     /**

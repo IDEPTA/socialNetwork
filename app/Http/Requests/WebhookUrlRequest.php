@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Auth;
+namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ResetPasswordValidation extends FormRequest
+class WebhookUrlRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,8 +22,7 @@ class ResetPasswordValidation extends FormRequest
     public function rules(): array
     {
         return [
-            "name" => "required|min:2",
-            "email" => "required|email"
+            "url" => "required|url"
         ];
     }
 }

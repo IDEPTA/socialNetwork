@@ -2,19 +2,22 @@
 
 namespace App\Http\Controllers\Auth;
 
+use Exception;
+use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ConfirmCodeRequest;
 use App\Http\Requests\Auth\LoginValidation;
 use App\Http\Requests\Auth\RegisterValidation;
 use App\Interfaces\Auth\AuthServicesInterface;
-use Exception;
-use Illuminate\Http\Request;
+use App\Http\Requests\Auth\PasswordResetRequest;
 
 class AuthController extends Controller
 {
 
     public function __construct(protected AuthServicesInterface $authService) {}
 
-    public function login(LoginValidation $loginData)
+    public function login(LoginValidation $loginData): JsonResponse
     {
         try {
             $token = $this->authService->login($loginData);
@@ -30,7 +33,23 @@ class AuthController extends Controller
         }
     }
 
-    public function register(RegisterValidation $registerData)
+    public function code_confirm(ConfirmCodeRequest $request): JsonResponse
+    {
+        try {
+            $validate = $request->validated();
+            $token = $this->authService->confirmTfaCode($validate['code']);
+            return response()->json([
+                "token" => $token
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                "msg" => $e->getMessage(),
+                "code" => $e->getCode()
+            ]);
+        }
+    }
+
+    public function register(RegisterValidation $registerData): JsonResponse
     {
         try {
             $token = $this->authService->register($registerData);
@@ -47,7 +66,7 @@ class AuthController extends Controller
         }
     }
 
-    public function logout(Request $req)
+    public function logout(Request $req): JsonResponse
     {
         try {
             $this->authService->logout($req);
@@ -60,6 +79,21 @@ class AuthController extends Controller
                 "msg" => $e->getMessage(),
                 "code" => $e->getCode()
             ]);
+        }
+    }
+
+    public function reset_password(PasswordResetRequest $request)
+    {
+        try {
+            $newPassword = $this->authService->resetPassword($request);
+            return response()->json([
+                "password" => $newPassword
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                "msg" => $e->getMessage(),
+                "code" => $e->getCode()
+            ], $e->getCode());
         }
     }
 }
