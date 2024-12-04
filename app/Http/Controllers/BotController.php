@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\WebhookUrlRequest;
 use App\Services\Telegram\TelegramService;
 use Telegram\Bot\Api;
 use Illuminate\Http\Request;
@@ -50,12 +51,10 @@ class BotController extends Controller
         }
     }
 
-    public function setWebhook(Request $req)
+    public function setWebhook(WebhookUrlRequest $req)
     {
         try {
-            $validated = $req->validate([
-                "url" => "required|url",
-            ]);
+            $validated = $req->validated();
             $webhookInfo = $this->telegramService->setWebhook($validated['url']);
             return response()->json([
                 "webhookInfo" => $webhookInfo
