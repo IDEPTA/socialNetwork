@@ -1,0 +1,267 @@
+scalar DateTime
+    @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
+"A user of the application."
+type User {
+    "Unique identifier for the user."
+    id: ID!
+
+    "The user's name."
+    name: String!
+
+    "The user's unique email address."
+    email: String!
+
+    "TFA token."
+    tfa: Boolean!
+
+    "TFA code."
+    tfa_code: String!
+
+    "TFA code expries at."
+    tfa_code_expries_at: DateTime!
+
+    "Telegram chat id."
+    telegram_chat_id: String!
+
+    "Telegram username."
+    telegram_username: String!
+
+    "Timestamp for when the user's email was verified."
+    email_verified_at: DateTime!
+
+    "Timestamp for when the user account was created."
+    created_at: DateTime!
+
+    "Timestamp for when the user account was last updated."
+    updated_at: DateTime!
+}
+
+type Post {
+    "Unique identifier for the post."
+    id: ID!
+
+    "Title post."
+    title: String!
+
+    "Text post."
+    text: String!
+
+    "Images for post."
+    images: String!
+
+    "Post user id."
+    user_id: ID!
+
+    "Timestamp for post."
+    created_at: DateTime!
+
+    "Timestamp for post."
+    updated_at: DateTime!
+
+    "The user who created the post."
+    user: User! # Связь с моделью User
+}
+
+type Comment {
+    "Unique identifier for the comment."
+    id: ID!
+
+    "user created post."
+    user: User!
+
+    "Text comment."
+    text: String!
+
+    "post."
+    post: Post!
+
+    "Timestamp for post."
+    created_at: DateTime!
+
+    "Timestamp for post."
+    updated_at: DateTime!
+}
+
+type PostLike {
+    "Unique identifier for the post like."
+    id: ID!
+
+    "user created post."
+    user_id: ID!
+
+    "post."
+    post_id: ID!
+
+    "user created post."
+    user: User!
+
+    "post."
+    post: Post!
+
+    "Feedback type"
+    feedback_type: Boolean!
+
+    "Timestamp for post likes."
+    created_at: DateTime!
+
+    "Timestamp for post likes."
+    updated_at: DateTime!
+}
+
+type Chat {
+    "Unique identifier for the chat."
+    id: ID!
+
+    "user sender."
+    sender: User!
+
+    "user recipient."
+    recipient: User!
+
+    "Timestamp for post likes."
+    created_at: DateTime!
+
+    "Timestamp for post likes."
+    updated_at: DateTime!
+}
+
+type Message {
+    "Unique identifier for the message."
+    id: ID!
+
+    "message sender."
+    user: User!
+
+    "message ."
+    message: String!
+
+    "Chat sender."
+    chat: Chat!
+
+    "Timestamp for post likes."
+    created_at: DateTime!
+
+    "Timestamp for post likes."
+    updated_at: DateTime!
+}
+
+type Query {
+    "Получение всех записей из таблицы."
+    users: [User!]! @all #@paginate(defaultCount: 10)
+    "Find a single user by ID or email."
+    user(
+        "Search by primary key."
+        id: ID @eq @rules(apply: ["prohibits:email", "required_without:email"])
+
+        "Search by email address."
+        email: String
+            @eq
+            @rules(apply: ["prohibits:id", "required_without:id", "email"])
+    ): User @find
+
+    userById(id: ID @eq): User @find
+
+    "get all posts."
+    posts(title: String @where(operator: "like")): [Post!]!
+        @paginate(defaultCount: 10)
+    "Find a single post by ID or title."
+    post(
+        "Search by primary key."
+        id: ID @eq
+
+        "Search by title."
+        title: String
+            @eq
+            @rules(apply: ["prohibits:id", "required_without:id", "title"])
+    ): Post @find
+
+    "get all comments."
+    comments(text: String @where(operator: "like")): [Comment!]!
+        @paginate(defaultCount: 10)
+    "Find a single comment by ID or text."
+    comment(
+        "Search by primary key."
+        id: ID @eq
+
+        "Search by text."
+        text: String
+            @eq
+            @rules(apply: ["prohibits:id", "required_without:id", "text"])
+    ): Comment @find
+
+    "get all post likes."
+    postLikes(text: String @where(operator: "like")): [PostLike!]!
+        @paginate(defaultCount: 10)
+    "Find a single post like by ID or text."
+    postLike(
+        "Search by primary key."
+        id: ID @eq
+
+        "Search by text."
+        text: String
+            @eq
+            @rules(apply: ["prohibits:id", "required_without:id", "text"])
+    ): PostLike @find
+
+    "get all post likes."
+    chats(text: String @where(operator: "like")): [Chat!]!
+        @paginate(defaultCount: 10)
+    "Find a single post like by ID"
+    chat("Search by primary key." id: ID @eq): Chat @find
+
+    "get all messages."
+    messages(text: String @where(operator: "like")): [Message!]!
+        @paginate(defaultCount: 10)
+    "Find a single message like by ID"
+    message("Search by primary key." id: ID @eq): Message @find
+}
+
+type Mutation {
+    "Create a new user."
+    createUser(
+        "The user's name."
+        name: String!
+
+        "The user's email."
+        email: String!
+
+        "The user's password."
+        password: String! @rules(apply: ["min:6"])
+    ): User @create
+
+    "Update an existing user's details."
+    updateUser(
+        "Unique identifier for the user to be updated."
+        id: ID! @rules(apply: ["exists:users,id"])
+
+        "The new name for the user."
+        name: String
+
+        "The new email for the user."
+        email: String @rules(apply: ["email", "unique:users,email"])
+
+        "The new password for the user."
+        password: String @rules(apply: ["min:6"])
+    ): User @update
+
+    "Delete a user by ID."
+    deleteUser(
+        "Unique identifier for the user to be deleted."
+        id: ID! @rules(apply: ["exists:users,id"])
+    ): Boolean @delete
+
+    createPostLike(
+        user_id: ID!
+        post_id: ID!
+        feedback_type: Boolean
+    ): PostLike @create
+
+    updatePostLike(
+        id: ID!
+        user_id: ID!
+        post_id: ID!
+        feedback_type: Boolean
+    ): PostLike @update
+
+    deletePostLike(id: ID! @eq): PostLike @delete
+}
