@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Traits\Filterable as TraitsFilterable;
+use App\Traits\Sortable;
 use Orchid\Screen\AsSource;
 use Orchid\Metrics\Chartable;
 use Orchid\Filters\Filterable;
@@ -17,6 +19,8 @@ class Post extends Model
     use Filterable;
     use AsSource;
     use Chartable;
+    use TraitsFilterable;
+    use Sortable;
 
     protected $fillable = [
         "title",
