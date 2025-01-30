@@ -2,15 +2,24 @@
 
 namespace App\Services\Post;
 
+use App\Http\Builders\Filters\PostFilter;
+use App\Http\Builders\Sorts\PostSort;
 use App\Http\Requests\PostValidation;
 use App\Interfaces\Post\PostServiceInterface;
 use App\Models\Post;
 
 class PostService implements PostServiceInterface
 {
+    public function __construct(
+        private readonly PostFilter $filter,
+        private readonly PostSort $sort,
+    ) {}
     public function index(): object
     {
-        $posts = Post::with(["comment", "user"])->get();
+        $posts = Post::with(["comment", "user"])
+            ->filter($this->filter)
+            ->sort($this->sort)
+            ->get();
 
         return $posts;
     }
