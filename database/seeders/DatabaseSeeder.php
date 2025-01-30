@@ -17,10 +17,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory(10)->create();
-        Post::factory(10)->create();
-        Comment::factory(10)->create();
-        PostLike::factory(10)->create();
+        // User::factory(50)->create();
+        // Post::factory(500)->create();
+        // Comment::factory(500)->create();
+        PostLike::factory(15500)->create();
         // User::factory()->create([
         //     'name' => 'Прокопчук Сергей Александрович',
         //     'email' => 'test@yandex.ru',
