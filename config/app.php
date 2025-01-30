@@ -123,4 +123,6 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    'telegram_url' => env('TELEGRAM_BOT_URL'),
+
 ];

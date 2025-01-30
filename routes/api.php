@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\BotController;
 use App\Http\Controllers\Chat\ChatController;
 use App\Http\Controllers\Chat\ChatShowController;
 use App\Http\Controllers\EmailNotificationController;
@@ -18,6 +19,8 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 Route::controller(AuthController::class)->group(function () {
     Route::post("login", "login");
+    Route::post("confirmCode", "code_confirm");
+    Route::post("resetPassword", "reset_password");
     Route::post("register", "register");
     Route::get("logout", "logout")->middleware("auth:sanctum");
 });
@@ -45,3 +48,14 @@ Route::controller(MessageShowController::class)->group(function () {
 });
 
 Route::post("sendEmailNotifications", EmailNotificationController::class);
+
+
+// Telegram
+Route::prefix('/telegram')->group(function () {
+    Route::middleware(["auth:sanctum"])->group(function () {
+        Route::get("show", [BotController::class, "show"]);
+        Route::get("getUserUrl", [BotController::class, "getUserUrl"]);
+    });
+    Route::post("setWebhook", [BotController::class, "setWebhook"]);
+    Route::post("webhook", [BotController::class, "webhook"]);
+});

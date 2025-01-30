@@ -39,7 +39,7 @@ class PostController extends Controller
         try {
             $newPost = $this->postService->store($request);
 
-            return response()->json(['newPost' => $newPost], 200);
+            return response()->json(['newPost' => $newPost], 201);
         } catch (Exception $e) {
             return response()->json([
                 'msg' => $e->getMessage(),
