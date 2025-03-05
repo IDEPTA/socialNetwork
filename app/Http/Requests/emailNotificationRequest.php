@@ -22,6 +22,7 @@ class emailNotificationRequest extends FormRequest
     public function rules(): array
     {
         return [
+            "user_id" => "integer",
             "title" => "required|min:3",
             "text" => "required|min:3|max:255"
         ];
