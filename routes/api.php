@@ -13,6 +13,7 @@ use App\Http\Controllers\Like\PostLikeController;
 use App\Http\Controllers\Like\PostLikeShowController;
 use App\Http\Controllers\Message\MessageController;
 use App\Http\Controllers\Message\MessageShowController;
+use App\Http\Controllers\RecognitionController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -48,7 +49,7 @@ Route::controller(MessageShowController::class)->group(function () {
 });
 
 Route::post("sendEmailNotifications", EmailNotificationController::class);
-
+Route::post("uploadFile", RecognitionController::class);
 
 // Telegram
 Route::prefix('/telegram')->group(function () {
