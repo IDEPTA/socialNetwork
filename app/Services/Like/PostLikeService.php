@@ -35,7 +35,7 @@ class PostLikeService implements PostLikeServiceInterface
         $validationData = $request->validated();
         $newLike = PostLike::create($validationData);
 
-        return $newLike;
+        return $newLike::with('user', 'post')->where('id', $newLike->id)->first();
     }
 
     public function update(PostLikeRequest $req, PostLike $like): PostLike
