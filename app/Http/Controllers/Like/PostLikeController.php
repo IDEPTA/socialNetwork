@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Like;
 
 use Exception;
+use App\Jobs\SendLogJob;
 use App\Models\PostLike;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PostLikeRequest;
@@ -36,7 +37,14 @@ class PostLikeController extends Controller
         try {
             $newLike = $this->likeService->store($request);
 
-            return response()->json(["newLike" => $newLike], 201);
+            $feedbackType = $newLike->feedback_type ? "лайк" : "дизлайк";
+            $msg = "Поставлен " .
+                $feedbackType  .
+                " на пост с id = " . $newLike->post_id .
+                " от пользователя с id = " . $newLike->user_id . " " . $newLike->user->name;
+            SendLogJob::dispatch($msg, 'info', $newLike->toArray());
+
+            return response()->json(["newLike" => $newLike->toArray()], 201);
         } catch (Exception $e) {
             return response()->json([
                 "msg" => $e->getMessage(),
@@ -70,6 +78,12 @@ class PostLikeController extends Controller
         try {
             $updatedLike = $this->likeService->update($request, $postLike);
 
+            $feedbackType = $updatedLike->feedback_type ? "лайк" : "дизлайк";
+            $msg = "Пользователь с id = " . $updatedLike->user_id . " " . $updatedLike->user->name . " изменил оценку на " .
+                $feedbackType  .
+                " для поста с id = " . $updatedLike->post_id;
+            SendLogJob::dispatch($msg, 'info', $updatedLike->toArray());
+
             return response()->json(["updatedLike" => $updatedLike]);
         } catch (Exception $e) {
             return response()->json([
@@ -85,6 +99,12 @@ class PostLikeController extends Controller
     public function destroy(PostLike $postLike)
     {
         $this->likeService->destroy($postLike);
+
+        $feedbackType = $postLike->feedback_type ? "лайк" : "дизлайк";
+        $msg = "Пользователь с ID" . $postLike->user_id . " " . $postLike->user->name . " убрал оценку " .
+            $feedbackType  .
+            " для поста с ID" . $postLike->post_id;
+        SendLogJob::dispatch($msg, 'info', $postLike->toArray());
 
         return response()->json([
             "msg" => "Запись $postLike->id удалена"
