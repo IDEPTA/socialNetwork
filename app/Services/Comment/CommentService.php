@@ -4,14 +4,24 @@ namespace App\Services\Comment;
 
 use App\Models\Comment;
 use Illuminate\Support\Facades\Log;
+use App\Http\Builders\Sorts\CommentSort;
 use App\Http\Requests\CommentValidation;
+use App\Http\Builders\Filters\CommentFilter;
 use App\Interfaces\Comment\CommentServiceInterface;
 
 class CommentService implements CommentServiceInterface
 {
+    public function __construct(
+        private readonly CommentFilter $filter,
+        private readonly CommentSort $sort
+    ) {}
+
     public function index(): object
     {
-        $comments = Comment::with(["post", "user"])->get();
+        $comments = Comment::with(["post", "user"])
+            ->filter($this->filter)
+            ->sort($this->sort)
+            ->get();
 
         return $comments;
     }

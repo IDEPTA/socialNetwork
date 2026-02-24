@@ -5,3 +5,4 @@
 /pgsql
 .env
 .phpunit.result.cache
+/database/seeders/DatabaseSeeder.php

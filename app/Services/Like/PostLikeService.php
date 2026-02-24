@@ -2,15 +2,25 @@
 
 namespace App\Services\Like;
 
+use App\Http\Builders\Filters\PostLikeFilter;
+use App\Http\Builders\Sorts\PostLikeSort;
 use App\Models\PostLike;
 use App\Http\Requests\PostLikeRequest;
 use App\Interfaces\Like\PostLikeServiceInterface;
 
 class PostLikeService implements PostLikeServiceInterface
 {
+    public function __construct(
+        private readonly PostLikeFilter $filter,
+        private readonly PostLikeSort $sort
+    ) {}
+
     public function index(): object
     {
-        $likes = PostLike::with(["user", "post"])->get();
+        $likes = PostLike::with(["user", "post"])
+            ->filter($this->filter)
+            ->sort($this->sort)
+            ->paginate(50);
 
         return $likes;
     }
@@ -25,7 +35,7 @@ class PostLikeService implements PostLikeServiceInterface
         $validationData = $request->validated();
         $newLike = PostLike::create($validationData);
 
-        return $newLike;
+        return $newLike::with('user', 'post')->where('id', $newLike->id)->first();
     }
 
     public function update(PostLikeRequest $req, PostLike $like): PostLike
